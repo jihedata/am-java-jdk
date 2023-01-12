@@ -1,0 +1,24 @@
+
+syntax = "proto3";
+
+package cdp_ipc;
+option java_package="com.karfield.automatrix.ipc";
+
+service CdpIpc {
+    rpc GetBrowserDebuggerPort(GetBrowserDebuggerPortRequest) returns (GetBrowserDebuggerPortResponse);
+    rpc GetBrowserwsUrl(GetBrowserWsUrlRequest) returns (GetBrowserWsUrlResponse);
+}
+
+message GetBrowserDebuggerPortRequest {}
+
+message GetBrowserDebuggerPortResponse {
+    uint32 port = 1;
+}
+
+message GetBrowserWsUrlRequest {
+}
+
+message GetBrowserWsUrlResponse {
+    string ws_url = 1;
+    uint32 pid = 2; 
+}
