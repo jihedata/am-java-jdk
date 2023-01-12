@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package base_ipc;
+option java_package="com.karfield.automatrix.ipc";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "schema/schema.proto";
+
+service BaseIpc {
+    rpc Capabilities(CapabilitiesRequest) returns (CapabilitiesResponse);
+    rpc ConsumeTask(ConsumeTaskRequest) returns (stream ConsumeTaskResponse);
+    rpc FinishWithResult(ExecuteResult) returns (FeedResultResponse);
+    rpc FinishWithFailure(ExecuteFailure) returns (FeedResultResponse);
+    rpc GetSchema(GetSchemaRequest) returns (GetSchemaResponse);
+    rpc SaveLog(SaveLogRequest) returns (SaveLogResponse);
+}
+
+message CapabilitiesRequest {}
+message CapabilitiesResponse {
+    bool sql = 1;
+    bool ocr = 2;
+    bool cdp = 3;
+    bool proxy = 4;
+}
+
+message ConsumeTaskRequest {
+}
+
+message ConsumeTaskResponse {
+    string trace_id = 1;
+    bytes payload = 2;
+}
+
+message ExecuteResult {
+    string trace_id = 1;
+    string port_indicator = 2;
+    bytes output = 3;
+}
+
+message ExecuteFailure {
+    string trace_id = 1;
+    string error = 2;
+    bytes panic_stack = 3;
+}
+
+message FeedResultResponse {}
+
+message GetSchemaRequest {
+    string trace_id = 1;
+    bool input = 2;
+    string schema_code = 3;
+}
+message GetSchemaResponse {
+    schema.Schema schema = 1;
+    repeated string output_schema_codes = 2;
+}
+
+enum LogLevel {
+    Debug = 0;
+    Info = 1;
+    Warning = 2;
+    Error = 3;
+    Fatal = 4;
+}
+
+message SaveLogRequest {
+    string trace_id = 1;
+    LogLevel level = 2;
+    string message = 3;
+    bytes extra_json = 4;
+    string action = 5;
+}
+
+message SaveLogResponse {}
